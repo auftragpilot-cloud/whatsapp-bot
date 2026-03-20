@@ -30,7 +30,8 @@ app.post('/webhook', (req, res) => {
   console.log('🔥 WEBHOOK HIT');
   console.log(JSON.stringify(req.body, null, 2));
 
-  res.sendStatus(200);
+//WICHTIG:
+  res.sendStatus(200).json({ succes: true });
 });
 
 const PORT = process.env.PORT || 8080;
