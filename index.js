@@ -13,12 +13,16 @@ app.post('/webhook', async (req, res) => {
   console.log(JSON.stringify(req.body, null, 2));
 
   try {
-    const message = req.body?.messages?.[0];
-    const from = message?.from;
+    const entry = req.body.entry?.[0];
+    const changes = entry?.changes?.[0];
+    const value = changes?.value;
+    const messages = value?.messages;
 
-    if (from) {
+    if (messages && messages.length > 0) {
+      const from = messages[0].from;
+
       await axios.post(
-        `https://waba.360dialog.io/v1/messages`,
+        'https://waba.360dialog.io/v1/messages',
         {
           to: from,
           type: "text",
@@ -35,7 +39,7 @@ app.post('/webhook', async (req, res) => {
       );
     }
   } catch (err) {
-    console.log('❌ Fehler beim Antworten:', err.message);
+    console.log('❌ Fehler:', err.response?.data || err.message);
   }
 
   res.status(200).send('EVENT_RECEIVED');
