@@ -6,7 +6,7 @@ app.use(express.json());
 
 // 👉 HIER DEINE DATEN EINTRAGEN
 const API_KEY = 'rs09wb4uyZPUd1Pdm9cKz8dJAK';
-const PHONE_NUMBER_ID = '+4915124176783';
+const PHONE_NUMBER_ID = '1094395347081397';
 
 app.post('/webhook', async (req, res) => {
   console.log('🔥 WEBHOOK HIT');
