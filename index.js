@@ -1,41 +1,46 @@
 const express = require('express');
+const axios = require('axios');
+
 const app = express();
-
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// 🔍 Test Route
-app.get('/', (req, res) => {
-  res.send('Server läuft 🚀');
-});
+// 👉 HIER DEINE DATEN EINTRAGEN
+const API_KEY = 'rs09wb4uyZPUd1Pdm9cKz8dJAK';
+const PHONE_NUMBER_ID = '+4915124176783';
 
-// ✅ WICHTIG: Webhook Verifizierung (GET)
-app.get('/webhook', (req, res) => {
-  const VERIFY_TOKEN = "mein_token_123";
-
-  const mode = req.query['hub.mode'];
-  const token = req.query['hub.verify_token'];
-  const challenge = req.query['hub.challenge'];
-
-  if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-    console.log('Webhook verifiziert');
-    res.status(200).send(challenge);
-  } else {
-    res.sendStatus(403);
-  }
-});
-
-// 📩 Webhook empfängt Nachrichten (POST)
-app.post('/webhook', (req, res) => {
+app.post('/webhook', async (req, res) => {
   console.log('🔥 WEBHOOK HIT');
   console.log(JSON.stringify(req.body, null, 2));
 
-//WICHTIG:
-  res.sendStatus(200).json({ succes: true });
+  try {
+    const message = req.body?.messages?.[0];
+    const from = message?.from;
+
+    if (from) {
+      await axios.post(
+        `https://waba.360dialog.io/v1/messages`,
+        {
+          to: from,
+          type: "text",
+          text: {
+            body: "Hallo 👋 Nachricht ist angekommen!"
+          }
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${API_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+  } catch (err) {
+    console.log('❌ Fehler beim Antworten:', err.message);
+  }
+
+  res.status(200).send('EVENT_RECEIVED');
 });
 
-const PORT = process.env.PORT || 8080;
-
-app.listen(PORT, () => {
-  console.log(`Server läuft auf Port ${PORT}`);
+app.listen(process.env.PORT || 8080, () => {
+  console.log('Server läuft');
 });
