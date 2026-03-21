@@ -17,6 +17,7 @@ app.post("/webhook", async (req, res) => {
 await axios.post(
   "https://waba-v2.360dialog.io/messages",
   {
+    messaging_product: "whatsapp"
     recipient_type: "individual",
     to: from,
     type: "text",
