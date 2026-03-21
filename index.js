@@ -26,7 +26,7 @@ await axios.post(
   },
   {
     headers: {
-      "rs09wb4uyZPUd1Pdm9cKz8dJAK": process.env.API_KEY,
+      "D360-API-KEY": process.env.API_KEY,
       "Content-Type": "application/json"
     }
   }
