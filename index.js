@@ -13,25 +13,55 @@ app.post("/webhook", async (req, res) => {
 
     if (message) {
       const from = message.from;
+      const userText = message.text?.body?.toLowerCase() || "";
 
-await axios.post(
-  "https://waba-v2.360dialog.io/messages",
-  {
-    messaging_product: "whatsapp",
-    recipient_type: "individual",
-    to: from,
-    type: "text",
-    text: {
-      body: "Antwort funktioniert 🚀"
-    }
-  },
-  {
-    headers: {
-      "D360-API-KEY": process.env.API_KEY,
-      "Content-Type": "application/json"
-    }
-  }
-);
+      let reply = "Danke für deine Anfrage! Wir melden uns gleich 👍";
+
+      // 🔧 Sanitär erkennen
+      if (
+        userText.includes("rohr") ||
+        userText.includes("wasser") ||
+        userText.includes("heizung") ||
+        userText.includes("wc") ||
+        userText.includes("verstopft")
+      ) {
+        reply =
+          "Alles klar 🚿 Sanitär-Anfrage erkannt.\nBeschreib bitte kurz dein Problem + Adresse.";
+      }
+
+      // 🚨 Notfall erkennen
+      if (
+        userText.includes("notfall") ||
+        userText.includes("wasserschaden") ||
+        userText.includes("rohrbruch")
+      ) {
+        reply =
+          "🚨 NOTFALL erkannt!\nWir kümmern uns sofort. Bitte Adresse senden!";
+      }
+
+      // 📤 WhatsApp Antwort senden
+      await axios.post(
+        "https://waba-v2.360dialog.io/messages",
+        {
+          messaging_product: "whatsapp",
+          recipient_type: "individual",
+          to: from,
+          type: "text",
+          text: {
+            body: reply,
+          },
+        },
+        {
+          headers: {
+            "D360-API-KEY": process.env.API_KEY,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // 📥 DEBUG / später n8n
+      console.log("📩 Anfrage von:", from);
+      console.log("📝 Text:", userText);
     }
   } catch (err) {
     console.log("❌ Fehler:", err.response?.data || err.message);
