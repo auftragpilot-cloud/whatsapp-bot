@@ -15,7 +15,7 @@ app.post("/webhook", async (req, res) => {
       const from = message.from;
 
 await axios.post(
-  "https://waba.360dialog.io/v1/messages",
+  "https://waba-v2.360dialog.io/messages"
   {
     recipient_type: "individual",
     to: from,
