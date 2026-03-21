@@ -40,24 +40,13 @@ app.post("/webhook", async (req, res) => {
       }
 
       // 📤 WhatsApp Antwort senden
-      await axios.post(
-        "https://waba-v2.360dialog.io/messages",
-        {
-          messaging_product: "whatsapp",
-          recipient_type: "individual",
-          to: from,
-          type: "text",
-          text: {
-            body: reply,
-          },
-        },
-        {
-          headers: {
-            "D360-API-KEY": process.env.API_KEY,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+await axios.post(
+  "https://auftragpilot.app.n8n.cloud/webhook-test/whatsapp-lead",
+  {
+    from: from,
+    message: message.text?.body || ""
+  }
+);
 
       // 📥 DEBUG / später n8n
       console.log("📩 Anfrage von:", from);
