@@ -14,23 +14,23 @@ app.post("/webhook", async (req, res) => {
     if (message) {
       const from = message.from;
 
-      await axios.post(
-        "https://waba.360dialog.io/v1/messages",
-        {
-          recipient_type: "individual",
-          to: from,
-          type: "text",
-          text: {
-            body: "Antwort funktioniert 🚀"
-          }
-        },
-        {
-          headers: {
-            "D360-API-KEY": process.env.API_KEY,
-            "Content-Type": "application/json"
-          }
-        }
-      );
+await axios.post(
+  "https://waba.360dialog.io/v1/messages",
+  {
+    recipient_type: "individual",
+    to: from,
+    type: "text",
+    text: {
+      body: "Antwort funktioniert 🚀"
+    }
+  },
+  {
+    headers: {
+      "rs09wb4uyZPUd1Pdm9cKz8dJAK": process.env.API_KEY,
+      "Content-Type": "application/json"
+    }
+  }
+);
     }
   } catch (err) {
     console.log("❌ Fehler:", err.response?.data || err.message);
