@@ -12,45 +12,49 @@ app.post("/webhook", async (req, res) => {
   try {
     const message = req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
-    if (message) {
-      const from = message.from;
-      const userText = message.text?.body || "";
-
-      console.log("📩 Nachricht:", userText);
-
-      // 👉 1. AN N8N SENDEN
-      await axios.post(
-        "https://auftragpilot.app.n8n.cloud/webhook/whatsapp-lead",
-        {
-          from: from,
-          message: userText
-        }
-      );
-
-      // 👉 2. ANTWORT AN WHATSAPP
-      await axios.post(
-  "https://waba-v2.360dialog.io/messages",
-  {
-    messaging_product: "whatsapp",
-    to: from,
-    type: "text",
-    text: {
-      body: "Danke für deine Anfrage! Wir melden uns gleich 👍"
+    // 🔥 WICHTIG: Nur echte Textnachrichten verarbeiten
+    if (!message || message.type !== "text") {
+      return res.sendStatus(200);
     }
-  },
-  {
-    headers: {
-      "D360-API-KEY": process.env.API_KEY,
-      "Content-Type": "application/json"
-    }
-  }
-);
-    }
+
+    const from = message.from;
+    const userText = message.text.body.toLowerCase();
+
+    console.log("📩 Nachricht:", userText);
+
+    // 👉 1. AN N8N SENDEN
+    await axios.post(
+      "https://auftragpilot.app.n8n.cloud/webhook/whatsapp-lead",
+      {
+        from: from,
+        message: userText,
+      }
+    );
+
+    // 👉 2. ANTWORT AN WHATSAPP
+    await axios.post(
+      "https://waba-v2.360dialog.io/messages",
+      {
+        messaging_product: "whatsapp",
+        to: from,
+        type: "text",
+        text: {
+          body: "Danke für deine Anfrage! Wir melden uns gleich 👍",
+        },
+      },
+      {
+        headers: {
+          "D360-API-KEY": process.env.API_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return res.sendStatus(200);
   } catch (err) {
     console.log("❌ Fehler:", err.response?.data || err.message);
+    return res.sendStatus(200);
   }
-
-  res.sendStatus(200);
 });
 
 // 🔥 SERVER START
