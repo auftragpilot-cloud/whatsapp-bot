@@ -29,7 +29,7 @@ app.post("/webhook", async (req, res) => {
 
       // 👉 2. ANTWORT AN WHATSAPP
       await axios.post(
-  "https://waba-v2.360dialog.io/v1/messages",
+  "https://waba-v2.360dialog.io/messages",
   {
     to: from,
     type: "text",
