@@ -20,7 +20,7 @@ app.post("/webhook", async (req, res) => {
 
       // 👉 1. AN N8N SENDEN
       await axios.post(
-        "https://auftragpilot.app.n8n.cloud/webhook-test/whatsapp-lead",
+        "https://auftragpilot.app.n8n.cloud/webhook/whatsapp-lead",
         {
           from: from,
           message: userText
