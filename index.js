@@ -29,22 +29,21 @@ app.post("/webhook", async (req, res) => {
 
       // 👉 2. ANTWORT AN WHATSAPP
       await axios.post(
-        "https://waba-v2.360dialog.io/v1/messages",
-        {
-          messaging_product: "whatsapp",
-          to: from,
-          type: "text",
-          text: {
-            body: "Danke für deine Anfrage! Wir melden uns gleich 👍"
-          }
-        },
-        {
-          headers: {
-            "D360-API-KEY": process.env.API_KEY,
-            "Content-Type": "application/json"
-          }
-        }
-      );
+  "https://waba-v2.360dialog.io/v1/messages",
+  {
+    to: from,
+    type: "text",
+    text: {
+      body: "Danke für deine Anfrage! Wir melden uns gleich 👍"
+    }
+  },
+  {
+    headers: {
+      "D360-API-KEY": process.env.API_KEY,
+      "Content-Type": "application/json"
+    }
+  }
+);
     }
   } catch (err) {
     console.log("❌ Fehler:", err.response?.data || err.message);
